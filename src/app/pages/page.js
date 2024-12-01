@@ -2,11 +2,50 @@
 
 import Header from '../header'
 import Link from 'next/link'
-
+import axios from 'axios';
+import { useState } from 'react';
 
 export default function Home() {
 
   let title = "船検索"
+  const [formData, setFormData] = useState({
+    shipyardcode: "",
+    shipnumber: "",
+    customercode: "",
+    series: "",
+    shipnameen: "",
+    furunorescompany: "",
+    shipspecies: "",
+    shipnationality: "",
+    shipclass: "",
+    shiptype: "",
+    grosstonnage: "",
+    imono: "",
+    builddate: "",
+    f_shipno: "",
+    registeredowner: ""
+  });
+  const [results, setResults] = useState([]);
+
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      const response = await axios.post('http://localhost:8080/Ship/search', formData);
+      console.log("検索結果:", response.data)
+      // APIの結果をステートに保存
+      setResults(response.data);
+    } catch (error) {
+      console.error('検索エラー:', error);
+    }
+  };
   
   return (
     <div>
@@ -44,139 +83,153 @@ export default function Home() {
       </div>
 
       <div>
+        <form onSubmit={handleSubmit}>
+          <table>
+            <thead>
+            <tr>
+                <th>造船所</th>
+                <td></td>
+                <th>船番</th>
+                <td></td>
+                <th>取引先</th>
+                <td></td>
+                <th>シリーズ</th>
+                <td></td>
+                <th>船名</th>
+                <td></td>
+                <th>船船管理会社</th>
+              </tr>
+              <tr>
+              <td><input value={formData.shipyardcode} onChange={handleChange} className='form-container' type='text' name="shipyardcode"></input></td>
+              <td></td>
+              <td><input value={formData.shipnumber} onChange={handleChange} className='form-container' type='text' name="shipnumber"></input></td>
+              <td></td>
+              <td><input value={formData.customercode} onChange={handleChange} className='form-container' type='text' name="customercode"></input></td>
+              <td></td>
+              <td><input value={formData.series} onChange={handleChange} className='form-container' type='text' name="series"></input></td>
+              <td></td>
+              <td><input value={formData.shipnameen} onChange={handleChange} className='form-container' type='text' name="shipnameen"></input></td>
+              <td></td>
+              <td><input value={formData.furunorescompany} onChange={handleChange} className='form-container' type='text' name="furunorescompany"></input></td>
+              </tr>
+
+              <tr>
+                <th  colSpan="3">船種</th>
+                <td></td>
+                <th colSpan="3">船籍</th>
+                <td></td>
+                <th>船級</th>
+                <td></td>
+                <th>船船タイプ</th>
+              </tr>
+              <tr>
+              <td colSpan="3"><input value={formData.shipspecies} onChange={handleChange}  className='form-container' type='text' name="shipspecies"></input></td>
+              <td></td>
+              <td  colSpan="3"><input value={formData.shipnationality} onChange={handleChange}  className='form-container' type='text' name="shipnationality"></input></td>
+              <td></td>
+              <td><input value={formData.shipclass} onChange={handleChange} className='form-container' type='text' name="shipclass"></input></td>
+              <td></td>
+              <td><input value={formData.shiptype} onChange={handleChange} className='form-container' type='text' name="shiptype"></input></td>
+              </tr>
+
+              <tr>
+                <th></th>
+                <td></td>
+                <th>重量(GT)</th>
+                <td></td>
+                <th></th>
+                <td></td>
+                <th>IMONo</th>
+              </tr>
+              <tr>
+              <td><input value={formData.grosstonnage} onChange={handleChange} className='form-container' type='text' name="grosstonnage"></input></td>
+              <td></td>
+              <td><p className='form-center'>～</p></td>
+              <td></td>
+              <td><input value={formData.grosstonnage} onChange={handleChange} className='form-container' type='text' name="grosstonnage"></input></td>
+              <td></td>
+              <td><input value={formData.imono} onChange={handleChange} className='form-container' type='text' name="imono"></input></td>
+              </tr>
+
+              <tr>
+                <th></th>
+                <td></td>
+                <th>製造年月</th>
+                <td></td>
+                <th></th>
+                <td></td>
+                <th>F-ShipNo</th>
+                <td></td>
+              </tr>
+              <tr>
+              <td><input value={formData.builddate} onChange={handleChange}  className='form-container' type='text' name="builddate"></input></td>
+              <td></td>
+              <td><p className='form-center'>～</p></td>
+              <td></td>
+              <td><input value={formData.builddate} onChange={handleChange}  className='form-container' type='text' name="builddate"></input></td>
+              <td></td>
+              <td><input value={formData.f_shipno} onChange={handleChange}  className='form-container' type='text' name="f_shipno"></input></td>
+              <td></td>
+              <td><input type='checkbox' name="ronrisakujo" />論理削除表示:含</td>
+              <td></td>
+              <td><input value={formData.registeredowner} onChange={handleChange}  type='checkbox' name="registeredowner" />オーナー変更：有</td>
+              </tr>
+            </thead>
+          </table>
+
+          <div>
+            <button type="submit">検索</button>
+          </div>
+        </form>
+      </div>
+      
+      <div>
         <table>
           <thead>
-          <tr>
+            <tr>
+              <th>ステータス</th>
+              <td></td>
+              <th>移動品目</th>
+              <td></td>
+              <th>装備</th>
+              <td></td>
+              <th>F-ShipNo</th>
+              <td></td>
               <th>造船所</th>
               <td></td>
               <th>船番</th>
               <td></td>
-              <th>取引先</th>
-              <td></td>
               <th>シリーズ</th>
+              <td></td>
+              <th>取引先</th>
               <td></td>
               <th>船名</th>
               <td></td>
-              <th>船船管理会社</th>
-            </tr>
-            <tr>
-            <td><input className='form-container' type='text' name="zosenjo"></input></td>
-            <td></td>
-            <td><input className='form-container' type='text' name="hunaban"></input></td>
-            <td></td>
-            <td><input className='form-container' type='text' name="torihikisaki"></input></td>
-            <td></td>
-            <td><input className='form-container' type='text' name="sirizu"></input></td>
-            <td></td>
-            <td><input className='form-container' type='text' name="hunamei"></input></td>
-            <td></td>
-            <td><input className='form-container' type='text' name="hunesenkanrigaisya"></input></td>
-            </tr>
-
-            <tr>
-              <th  colSpan="3">船種</th>
+              <th>船種(Seaweb)</th>
               <td></td>
-              <th colSpan="3">船籍</th>
+              <th>船種</th>
               <td></td>
               <th>船級</th>
               <td></td>
-              <th>船船タイプ</th>
-            </tr>
-            <tr>
-            <td colSpan="3"><input className='form-container' type='text' name="hunesyu"></input></td>
-            <td></td>
-            <td  colSpan="3"><input className='form-container' type='text' name="huneseki"></input></td>
-            <td></td>
-            <td><input className='form-container' type='text' name="hunekyuu"></input></td>
-            <td></td>
-            <td><input className='form-container' type='text' name="hunesentaipu"></input></td>
-            </tr>
-
-            <tr>
-              <th></th>
-              <td></td>
-              <th>重量(GT)</th>
-              <td></td>
-              <th></th>
-              <td></td>
               <th>IMONo</th>
-            </tr>
-            <tr>
-            <td><input className='form-container' type='text' name="juuryoukagen"></input></td>
-            <td></td>
-            <td><p className='form-center'>～</p></td>
-            <td></td>
-            <td><input className='form-container' type='text' name="juuryoujougen"></input></td>
-            <td></td>
-            <td><input className='form-container' type='text' name="imono"></input></td>
-            </tr>
-
-            <tr>
-              <th></th>
               <td></td>
-              <th>製造年月</th>
+              <th>更新者</th>
               <td></td>
-              <th></th>
-              <td></td>
-              <th>F-ShipNo</th>
+              <th>更新日時</th>
               <td></td>
             </tr>
-            <tr>
-            <td><input className='form-container' type='text' name="seizounengetuhazime"></input></td>
-            <td></td>
-            <td><p className='form-center'>～</p></td>
-            <td></td>
-            <td><input className='form-container' type='text' name="seizounengetuowari"></input></td>
-            <td></td>
-            <td><input className='form-container' type='text' name="f-shipno"></input></td>
-            <td></td>
-            <td><input type='checkbox' name="ronrisakujo" />論理削除表示:含</td>
-            <td></td>
-            <td><input type='checkbox' name="onahenkou" />オーナー変更：有</td>
-            </tr>
-
           </thead>
         </table>
       </div>
 
       <div>
-        <button href='/api'>検索</button>
+        <ul>
+          {results.map((result, index) => (
+            <li key={index}>{JSON.stringify(result)}</li>
+          ))}
+        </ul>
       </div>
-
-      <div>
-      <tr>
-        <th>ステータス</th>
-        <td></td>
-        <th>移動品目</th>
-        <td></td>
-        <th>装備</th>
-        <td></td>
-        <th>F-ShipNo</th>
-        <td></td>
-        <th>造船所</th>
-        <td></td>
-        <th>船番</th>
-        <td></td>
-        <th>シリーズ</th>
-        <td></td>
-        <th>取引先</th>
-        <td></td>
-        <th>船名</th>
-        <td></td>
-        <th>船種(Seaweb)</th>
-        <td></td>
-        <th>船種</th>
-        <td></td>
-        <th>船級</th>
-        <td></td>
-        <th>IMONo</th>
-        <td></td>
-        <th>更新者</th>
-        <td></td>
-        <th>更新日時</th>
-        <td></td>
-        </tr>
-      </div>
+      
 
     </div>
   );
