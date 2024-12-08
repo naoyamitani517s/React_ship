@@ -8,7 +8,7 @@ export default function Api() {
     const [error, setError] = useState(null);
 
     useEffect(() => {
-        axios.get('http://localhost:8080/api/hello')
+        axios.get('http://192.168.56.1:8080/api/hello')
             .then(response => {
                 console.log('Response data:', response.data); // レスポンス内容を確認
                 setMessage(response.data.message);

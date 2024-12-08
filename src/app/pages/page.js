@@ -19,12 +19,15 @@ export default function Home() {
     shipnationality: "",
     shipclass: "",
     shiptype: "",
-    grosstonnage: "",
+    grosstonnageForm: "",
+    grosstonnageTo: "",
     imono: "",
-    builddate: "",
+    builddateFrom: "",
+    builddateTo: "",
     f_shipno: "",
     registeredowner: ""
   });
+
   const [results, setResults] = useState([]);
 
   const handleChange = (e) => {
@@ -34,16 +37,24 @@ export default function Home() {
     });
   };
 
+
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    const ClearData = Object.fromEntries(
+      Object.entries(formData).map(([key, value]) => [key, value ==="" ? null: value])
+    );
     try {
-      const response = await axios.post('http://localhost:8080/Ship/search', formData);
-      console.log("検索結果:", response.data)
+      console.log("ClearData:", ClearData)
+      const response = await axios.post('http://192.168.56.1:8080/Ship/search', ClearData);
+      // console.log("検索結果:", response.data)
       // APIの結果をステートに保存
       setResults(response.data);
     } catch (error) {
-      console.error('検索エラー:', error);
+      // console.log("Error Response", error.response);
+      // console.log("Error message", error.message);
+      // console.error('検索エラー:', error);
     }
   };
   
@@ -142,11 +153,11 @@ export default function Home() {
                 <th>IMONo</th>
               </tr>
               <tr>
-              <td><input value={formData.grosstonnage} onChange={handleChange} className='form-container' type='text' name="grosstonnage"></input></td>
+              <td><input value={formData.grosstonnageForm} onChange={handleChange} className='form-container' type='text' name="grosstonnageForm"></input></td>
               <td></td>
               <td><p className='form-center'>～</p></td>
               <td></td>
-              <td><input value={formData.grosstonnage} onChange={handleChange} className='form-container' type='text' name="grosstonnage"></input></td>
+              <td><input value={formData.grosstonnageTo} onChange={handleChange} className='form-container' type='text' name="grosstonnageTo"></input></td>
               <td></td>
               <td><input value={formData.imono} onChange={handleChange} className='form-container' type='text' name="imono"></input></td>
               </tr>
@@ -162,11 +173,11 @@ export default function Home() {
                 <td></td>
               </tr>
               <tr>
-              <td><input value={formData.builddate} onChange={handleChange}  className='form-container' type='text' name="builddate"></input></td>
+              <td><input value={formData.builddateFrom} onChange={handleChange}  className='form-container' type='text' name="builddateFrom"></input></td>
               <td></td>
               <td><p className='form-center'>～</p></td>
               <td></td>
-              <td><input value={formData.builddate} onChange={handleChange}  className='form-container' type='text' name="builddate"></input></td>
+              <td><input value={formData.builddateTo} onChange={handleChange}  className='form-container' type='text' name="builddateTo"></input></td>
               <td></td>
               <td><input value={formData.f_shipno} onChange={handleChange}  className='form-container' type='text' name="f_shipno"></input></td>
               <td></td>
@@ -225,7 +236,9 @@ export default function Home() {
       <div>
         <ul>
           {results.map((result, index) => (
-            <li key={index}>{JSON.stringify(result)}</li>
+            <th key={index}style={{ border: "1px solid black", padding: "8px" }}>
+              
+            </th>
           ))}
         </ul>
       </div>
